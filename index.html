@@ -914,4 +914,58 @@
     runCalculator();
   </script>
 </body>
+  <!-- INIZIO BLOCCO PROTEZIONE PIN -->
+<div id="pinLockOverlay" style="position:fixed;top:0;left:0;width:100vw;height:100vh;background-color:#0f172a;z-index:9999999;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:system-ui,-apple-system,sans-serif;padding:20px;box-sizing:border-box;">
+  <div style="background:#1e293b;border:1px solid #334155;border-radius:18px;padding:32px 24px;max-width:340px;width:100%;text-align:center;box-shadow:0 25px 50px -12px rgba(0,0,0,0.6);">
+    <div style="width:56px;height:56px;background:linear-gradient(135deg,#0d9488,#0284c7);border-radius:14px;margin:0 auto 16px;display:flex;align-items:center;justify-content:center;font-size:26px;">🔒</div>
+    <h2 style="color:#ffffff;font-size:20px;font-weight:700;margin:0 0 6px;">Area Riservata</h2>
+    <p style="color:#94a3b8;font-size:13px;margin:0 0 20px;">Inserisci il PIN personale per sbloccare Vintefy.pro</p>
+    
+    <input type="password" id="pinInput" inputmode="numeric" maxlength="8" placeholder="PIN" style="width:100%;padding:14px;border-radius:10px;border:1px solid #475569;background:#0f172a;color:#ffffff;font-size:22px;text-align:center;letter-spacing:8px;outline:none;box-sizing:border-box;margin-bottom:12px;" />
+    
+    <p id="pinErrorMsg" style="display:none;color:#f87171;font-size:12px;font-weight:600;margin:0 0 12px;">PIN non corretto. Riprova.</p>
+    
+    <button onclick="checkAccessPin()" style="width:100%;padding:14px;border-radius:10px;border:none;background:linear-gradient(135deg,#0d9488,#0284c7);color:#ffffff;font-size:15px;font-weight:700;cursor:pointer;transition:opacity 0.2s;">Sblocca</button>
+    
+    <label style="display:flex;align-items:center;justify-content:center;gap:8px;margin-top:16px;color:#94a3b8;font-size:12px;cursor:pointer;">
+      <input type="checkbox" id="rememberDevice" checked style="accent-color:#0d9488;"> Ricorda su questo dispositivo
+    </label>
+  </div>
+</div>
+
+<script>
+  (function() {
+    // MODIFICA QUI IL TUO PIN PERSONALE
+    const IL_TUO_PIN = "2317";
+
+    const overlay = document.getElementById('pinLockOverlay');
+    const input = document.getElementById('pinInput');
+    const errorMsg = document.getElementById('pinErrorMsg');
+    const remember = document.getElementById('rememberDevice');
+
+    if (localStorage.getItem('vintefy_unlocked') === 'true') {
+      overlay.style.display = 'none';
+    }
+
+    window.checkAccessPin = function() {
+      if (input.value === IL_TUO_PIN) {
+        if (remember.checked) {
+          localStorage.setItem('vintefy_unlocked', 'true');
+        }
+        overlay.style.display = 'none';
+      } else {
+        errorMsg.style.display = 'block';
+        input.value = '';
+        input.focus();
+      }
+    };
+
+    input.addEventListener('keyup', function(e) {
+      if (e.key === 'Enter') {
+        window.checkAccessPin();
+      }
+    });
+  })();
+</script>
+<!-- FINE BLOCCO PROTEZIONE PIN -->
 </html>
